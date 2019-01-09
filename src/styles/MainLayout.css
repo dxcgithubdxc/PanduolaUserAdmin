@@ -1,0 +1,17 @@
+.normal {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    overflow: scroll;
+}
+
+.main {
+    padding: 0 10px;
+    flex: 1 0 auto;
+}
+ 
