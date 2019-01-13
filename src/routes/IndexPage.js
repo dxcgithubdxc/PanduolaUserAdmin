@@ -4,7 +4,7 @@ import { createForm } from 'rc-form';
 import { routerRedux } from 'dva/router';
 import { Form, Icon, Input, Button,message, Checkbox } from 'antd';
 import styles from '../styles/IndexPage.less';
-import * as reajax from "../utils/ajax";
+import *as programHost from '../utils/ajax';
 var store = require('store');
 @createForm()
 @connect(state => ({
@@ -20,14 +20,14 @@ export default class Login extends React.Component {
    validateStatus2:"",
   help2:"",
   username:"",
-  pasword:"",
+  password:"",
   }
            
  }
 	componentWillMount(){
   console.log(this.props);
-  var username=store.get("username");
-  if(username){store.remove("username");}
+  var username=store.get("storeuser");
+  if(username){store.remove("storeuser");}
   }
   componentDidMount(){}
   inputUser(e){
@@ -36,18 +36,19 @@ export default class Login extends React.Component {
   }
   inputPass(e){
    this.setState({validateStatus2:"",help2:""});
-  	this.setState({pasword:e.target.value})
+  	this.setState({password:e.target.value})
   }
 	Login(){
+    const{username,password}=this.state;
 		if(this.state.username==""){
 			this.setState({validateStatus1:"error",help1:"*请输入您的用户名"});
 			return;
 		}
-		if(this.state.pasword==""){
+		if(this.state.password==""){
 			this.setState({validateStatus2:"error",help2:"*请输入您的密码"});
 			return;
 		}
-		let sbdata={loginName:this.state.username,loginPassword:this.state.pasword}
+		let sbdata={loginName:this.state.username,loginPassword:this.state.password}
 		//请求登录接口
     const content =this;
     const{dispatch,history}=content.props;
@@ -59,10 +60,7 @@ export default class Login extends React.Component {
 					    }
 					//  dispatch(routerRedux.push(path));
               history.push(path);
-              store.set("username",content.state.username);
-		
-		
-		
+              store.set("storeuser",{username:username,password:programHost.cryptoPassword(password)});// 本地存username和加密后的password
 	}
     render() {
     	const FormItem = Form.Item;
@@ -85,7 +83,7 @@ export default class Login extends React.Component {
         >
         <Input
         prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-        placeholder="Username"
+        placeholder="userName"
         value={this.state.username}
         onChange={this.inputUser.bind(this)}
          />
@@ -95,10 +93,10 @@ export default class Login extends React.Component {
         help={this.state.help2}
         >
             <Input prefix={<Icon type="lock"
-            style={{ color: 'rgba(0,0,0,.25)' }} />}
-             value={this.state.pasword}
-        onChange={this.inputPass.bind(this)}
-            type="password" placeholder="Password"
+              style={{ color: 'rgba(0,0,0,.25)' }} />}
+              value={this.state.password}
+              onChange={this.inputPass.bind(this)}
+              type="password" placeholder="Password"
             />
         </FormItem>
         <FormItem>
