@@ -5,6 +5,7 @@ import { routerRedux } from 'dva/router';
 import { Form, Icon, Input, Button,message, Checkbox } from 'antd';
 import styles from '../styles/IndexPage.less';
 import *as programHost from '../utils/ajax';
+import { runInThisContext } from 'vm';
 var store = require('store');
 @createForm()
 @connect(state => ({
@@ -43,13 +44,21 @@ export default class Login extends React.Component {
 		if(this.state.username==""){
 			this.setState({validateStatus1:"error",help1:"*请输入您的用户名"});
 			return;
+    }
+    if(this.state.username!=="admin"){
+			this.setState({validateStatus1:"error",help1:"*用户名错误"});
+			return;
 		}
 		if(this.state.password==""){
 			this.setState({validateStatus2:"error",help2:"*请输入您的密码"});
 			return;
+    }
+    if(this.state.password!=="a123456"){
+			this.setState({validateStatus2:"error",help2:"*密码错误"});
+			return;
 		}
 		let sbdata={loginName:this.state.username,loginPassword:this.state.password}
-		//请求登录接口
+    //请求登录接口
     const content =this;
     const{dispatch,history}=content.props;
 					    const path={

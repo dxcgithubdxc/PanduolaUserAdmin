@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Divider, Tag,Pagination,Button,Popconfirm } from 'antd';
+import { Table, Divider, Tag,Pagination,Button,Popconfirm,message} from 'antd';
 import { routerRedux } from 'dva/router';
 import *as programHost from '../utils/ajax';
 import styles from '../styles/IndexPage.less';
@@ -29,7 +29,6 @@ export default class Home extends React.Component {
         else {
             const {currentPage}=this.state;
             const content =this;
-            console.log(programHost.getAuth(`/user/apply/list/${currentPage}/10`));
             const sbdata={where:{}};
                 //联网
             fetch(`${programHost.APIhost}/user/apply/list/${currentPage}/10`, {
@@ -105,12 +104,12 @@ export default class Home extends React.Component {
             title: '操作',
             dataIndex: 'action',
             render: (text,record)=>{
-                return(<div>
+                return (record.state===1?<div>
                     <Button size="small" type="primary" style={{marginRight:20}}onClick={()=>{this.sureApply(record)}}>同意申请</Button>
                     <Popconfirm placement="top" title="确认驳回申请吗" onConfirm={()=>{this.cancelApply(record);}} okText="是" cancelText="否">
                         <Button size="small" type="danger">驳回申请</Button>
                     </Popconfirm>
-                </div>)
+                </div>:"")
             },
           },
         ];
@@ -118,25 +117,100 @@ export default class Home extends React.Component {
     }
     sureApply(record){
         console.log(record);
+        const content =this;
+        const sbdata={state:2};
+        //联网
+        fetch(`${programHost.APIhost}/user/apply/update/${record._id}`, {
+            method: 'PUT',
+            dataType: 'json',
+            body:JSON.stringify(sbdata),
+            mode: 'cors',
+            credentials: 'include',
+            headers: new Headers({
+                Accept: 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization':programHost.getAuth(`/user/apply/update/${record._id}`),// 获取token
+            }),
+            }).then((response) => {
+            console.log(response);
+            response.json().then((res) => {
+                console.log(res);
+                if(res.statusCode===107){
+                    message.success('同意申请成功！！');
+                    content.componentWillMount();
+                }
+                else{ message.warn(res.message);}
+                
+                },(data) => {
+                console.log(data)
+            });
+        });
     }
     cancelApply(record){
         console.log(record);
+        const content =this;
+        const sbdata={state:3};
+        //联网
+        fetch(`${programHost.APIhost}/user/apply/update/${record._id}`, {
+            method: 'PUT',
+            dataType: 'json',
+            body:JSON.stringify(sbdata),
+            mode: 'cors',
+            credentials: 'include',
+            headers: new Headers({
+                Accept: 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Authorization':programHost.getAuth(`/user/apply/update/${record._id}`),// 获取token
+            }),
+            }).then((response) => {
+            console.log(response);
+            response.json().then((res) => {
+                console.log(res);
+                if(res.statusCode===107){
+                    message.success('驳回申请成功！！');
+                    content.componentWillMount();
+                }
+                else{ message.warn(res.message);}
+                },(data) => {
+                console.log(data)
+            });
+        });
     }
     changePage (page){
         console.log(page);
         const {totalPage}=this.state;
-        if(page>=totalPage){
-            this.setState({currentPage:totalPage});
-        }else{
-            this.setState({currentPage:page});
-        }
-        // this.setState({
-        //   current: page,
-        // });
+        if(page>=totalPage){this.setState({currentPage:totalPage});}
+        else{ this.setState({currentPage:page});}
+        const content=this;
+        const sbdata={where:{}};
+                //联网
+            fetch(`${programHost.APIhost}/user/apply/list/${page}/10`, {
+                method: 'POST',
+                dataType: 'json',
+                body:JSON.stringify(sbdata),
+                mode: 'cors',
+                credentials: 'include',
+                headers: new Headers({
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    'Authorization':programHost.getAuth(`/user/apply/list/${page}/10`),// 获取token
+                }),
+                }).then((response) => {
+                console.log(response);
+                response.json().then((res) => {
+                    console.log(res);
+                    if(res.statusCode===107){
+                        const arr=res.resource;
+                        arr.forEach((item,ind)=>{item.key=ind;});
+                        content.setState({totalPage:res.sum,applyList:arr});
+                    }
+                    },(data) => {
+                    console.log(data)
+                });
+            });
       }
     render() {
         const {columns,applyList,currentPage,totalPage}=this.state;
-        console.log(totalPage);
         return (
             <div className={styles.normal}>
                 <h1 className={styles.title}>用户申请列表</h1>
