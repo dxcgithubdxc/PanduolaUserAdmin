@@ -2,10 +2,6 @@ require('fetch-ie8');
 var AES = require("crypto-js/aes");
 var HmacMD5 = require("crypto-js/hmac-md5");
 var store = require('store');
-//export const APIHost ='http://192.168.2.183:1261';//毛二哥
-//export const APIHost ='http://47.92.145.141:2810';//测试服务器
-//export const APIHost ='http://43.242.33.247:8001';//测式2地址
-export const APIHost ='http://43.242.33.239:8001';//正式服务器
 
 export var defaultParams = {
   mode: 'cors',

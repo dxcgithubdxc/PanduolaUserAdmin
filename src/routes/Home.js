@@ -8,6 +8,7 @@ var store = require('store');
 @connect(state => ({
   user: state.user,
 }))
+
 export default class Home extends React.Component {
 	constructor(props) {
         super(props);
@@ -19,6 +20,8 @@ export default class Home extends React.Component {
         }
     }
     componentWillMount(){
+        const userAgent= navigator.userAgent;
+	    console.log(userAgent);
         console.log(this.props);
         var username=store.get("storeuser");
         if(!username){
