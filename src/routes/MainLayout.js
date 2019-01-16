@@ -77,8 +77,10 @@ export default class MainLayout extends Component {
           >
           <div className={this.state.collapsed?"logo_coll":"logo"}></div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={[this.state.defaultSelectedKeys]} onClick={this.menuClick.bind(this)}>
-              <Menu.Item key="home"> <Link to="/home"><Icon type="home" /><span>首页</span></Link></Menu.Item >
+              <Menu.Item key="home"> <Link to="/home"><Icon type="home" /><span>审核游戏</span></Link></Menu.Item >
               <Menu.Item key="user"> <Link to="/user"><Icon type="user" /><span>用户列表</span></Link></Menu.Item >
+              <Menu.Item key="gameapplylist"> <Link to="/gameapplylist"><Icon type="user" /><span>游戏申请列表</span></Link></Menu.Item >
+              
           </Menu>
         </Sider>
         <Layout>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Divider, Tag,Pagination,Button,Popconfirm,message} from 'antd';
+import { Table, Divider, Tag,Pagination,Button,Popconfirm,message,Modal} from 'antd';
 import { routerRedux } from 'dva/router';
 import *as programHost from '../utils/ajax';
 import styles from '../styles/IndexPage.less';
@@ -17,6 +17,7 @@ export default class Home extends React.Component {
             totalPage:0,
             currentPage:1,
             columns:[],
+           
         }
     }
     componentWillMount(){
@@ -69,9 +70,13 @@ export default class Home extends React.Component {
           },{
             align:'center',
             title: '手机号',
-            key: 'mobile',
             dataIndex: 'tags',
             render: (text,record)=>{return(<span>{record.mobile}</span>)},
+          },{
+            align:'center',
+            title: '申请时间',
+            dataIndex: 'createTime',
+            render: (text,record)=>{return(<span>{new Date(record.createTime).toISOString()}</span>)},
           },{
             align:'center',
             title: '生日',
@@ -216,7 +221,7 @@ export default class Home extends React.Component {
         const {columns,applyList,currentPage,totalPage}=this.state;
         return (
             <div className={styles.normal}>
-                <h1 className={styles.title}>用户申请列表</h1>
+                <h1 className={styles.title}>审核主播申请</h1>
                 <div className={styles.tableDiv}>
                     <Table columns={columns} dataSource={applyList} pagination={false} />
                     <Pagination current={currentPage} onChange={(page)=>{this.changePage(page);}} total={totalPage}/>

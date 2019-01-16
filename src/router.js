@@ -31,6 +31,12 @@ function RouterConfig({ history, app }) {
         models: () => [import('./models/users')],
         component: () => import('./routes/User')
     })
+    const GameApplyList = dynamic({
+        app,
+        models: () => [import('./models/users')],
+        component: () => import('./routes/GameApplyList')
+    })
+    
     return (
         <ConnectedRouter history={history}>
         {/*Layout以外是登录、404等其他页面的所有路由*/}
@@ -42,6 +48,7 @@ function RouterConfig({ history, app }) {
                     <Route path="/layout" exact component={MainLayout} />
                     <Route path="/home" exact component={Home} />
                     <Route path="/user" exact component={User} />
+                    <Route path="/gameapplylist" exact component={GameApplyList} />
                     
                     {/* </Route> */}
                     </Switch>
