@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Table, Divider, Tag,Pagination,Button,Popconfirm,message,Input} from 'antd';
+import { Table, Select, Tag,Pagination,Button,Popconfirm,message,Input} from 'antd';
 import *as programHost from '../utils/ajax';
 import styles from '../styles/IndexPage.less';
 var store = require('store');
@@ -20,6 +20,7 @@ export default class GameApplyList extends React.Component {
             price:"",
             rate:0.0,
             editingId:"",
+            roteType:{key:0,title:'全部'},
         }
     }
     componentWillMount(){
@@ -86,9 +87,26 @@ export default class GameApplyList extends React.Component {
             render: (text,record)=>{return(<span>{new Date(record.createTime).toISOString()}</span>)},
           },{
             align:'center',
-            title: '游戏段位',
+            title: '申请游戏段位',
             dataIndex: 'service_gameLevel',
             render: (text,record)=>{return(<span>{record.service_gameLevel?record.service_gameLevel:""}</span>)},
+          },{
+            align:'center',
+            title: '设置游戏等级',
+            dataIndex: 'roleType',
+            render: (text,record)=>{
+                const {Option}=Select;
+                let renderElement=null;
+                if(this.state.editingId===record._id){
+                    renderElement=(<Select labelInValue defaultValue={record.roteTypeList[0]} style={{ width: 120 }} onChange={(value)=>{this.setState({roteType:value})}}>
+                    {record.roteTypeList.map((item,index)=>{return (<Option value={item.key}key={index}>{item.title}</Option>)})}
+                  </Select>)
+                }
+                else{
+                    renderElement=(<span>{record.roteLabel?record.roteLabel:"未设置"}</span>);
+                }
+                return renderElement;
+            },
           },{
             align:'center',
             title: '开通状态',
@@ -128,12 +146,18 @@ export default class GameApplyList extends React.Component {
     }
     
     savePriceRate(record){
-        const {price,rate}=this.state;
+        const {price,rate,roteType}=this.state;
         if(Number(price)<=0){message.warn("价格必须大于0！！"); return;}
         if(Number(rate)<=0){message.warn("佣金比例必须大于0！！"); return;}
         if(Number(rate)>1){message.warn("佣金比例不能超过1！！"); return;}
+        
         const content = this;
-        const sbdata={price,rate};
+        const sbdata={
+            price,
+            rate,
+            roteType:roteType.key,
+            roteLabel:roteType.title,
+        };
                 //联网
             fetch(`${programHost.APIhost}/user/anchor/game/item/${record._id}`, {
                 method: 'POST',

@@ -20,9 +20,6 @@ export default class User extends React.Component {
         }
     }
     componentWillMount(){
-        const userAgent= navigator.userAgent;
-	    console.log(userAgent);
-        console.log(this.props);
         var username=store.get("storeuser");
         if(!username){
             const{dispatch,history}=this.props;
@@ -46,7 +43,6 @@ export default class User extends React.Component {
                     'Authorization':programHost.getAuth(`/user/list/${currentPage}/10`),// 获取token
                 }),
                 }).then((response) => {
-                console.log(response);
                 response.json().then((res) => {
                     console.log(res);
                     if(res.statusCode===107){
@@ -105,7 +101,6 @@ export default class User extends React.Component {
           this.setState({columns});
     }
     changePage (page){
-        console.log(page);
         const {totalPage}=this.state;
         if(page>=totalPage){this.setState({currentPage:totalPage});}
         else{ this.setState({currentPage:page});}
@@ -124,7 +119,6 @@ export default class User extends React.Component {
                     'Authorization':programHost.getAuth(`/user/list/${page}/10`),// 获取token
                 }),
                 }).then((response) => {
-                console.log(response);
                 response.json().then((res) => {
                     console.log(res);
                     if(res.statusCode===107){
