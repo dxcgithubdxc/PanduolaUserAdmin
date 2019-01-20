@@ -36,6 +36,11 @@ function RouterConfig({ history, app }) {
         models: () => [import('./models/users')],
         component: () => import('./routes/GameApplyList')
     })
+    const SetGifts = dynamic({
+        app,
+        models: () => [import('./models/users')],
+        component: () => import('./routes/SetGifts')
+    })
     
     return (
         <ConnectedRouter history={history}>
@@ -49,6 +54,7 @@ function RouterConfig({ history, app }) {
                     <Route path="/home" exact component={Home} />
                     <Route path="/user" exact component={User} />
                     <Route path="/gameapplylist" exact component={GameApplyList} />
+                    <Route path="/setgifts" exact component={SetGifts} />
                     
                     {/* </Route> */}
                     </Switch>

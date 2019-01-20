@@ -80,6 +80,8 @@ export default class MainLayout extends Component {
               <Menu.Item key="home"> <Link to="/home"><Icon type="home" /><span>审核游戏</span></Link></Menu.Item >
               <Menu.Item key="user"> <Link to="/user"><Icon type="user" /><span>用户列表</span></Link></Menu.Item >
               <Menu.Item key="gameapplylist"> <Link to="/gameapplylist"><Icon type="user" /><span>游戏申请列表</span></Link></Menu.Item >
+              <Menu.Item key="setgifts"> <Link to="/setgifts"><Icon type="user" /><span>礼物设置</span></Link></Menu.Item >
+              
               
           </Menu>
         </Sider>

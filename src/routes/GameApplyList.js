@@ -79,7 +79,7 @@ export default class GameApplyList extends React.Component {
             title: '游戏图标',
             key: 'selectedImg',
             dataIndex: 'tags',
-            render: (text,record)=>{return(<img style={{height:50,wiath:50}} src={record.selectedImg}/>)},
+            render: (text,record)=>{return(<img style={{height:50,wiath:50}} src={record.selectedImg} alt=""/>)},
           },{
             align:'center',
             title: '申请时间',
@@ -142,6 +142,7 @@ export default class GameApplyList extends React.Component {
           this.setState({columns});
     }
     editPriceRate(record){
+
         this.setState({editingId:record._id,price:record.price,rate:record.rate});
     }
     
@@ -150,14 +151,15 @@ export default class GameApplyList extends React.Component {
         if(Number(price)<=0){message.warn("价格必须大于0！！"); return;}
         if(Number(rate)<=0){message.warn("佣金比例必须大于0！！"); return;}
         if(Number(rate)>1){message.warn("佣金比例不能超过1！！"); return;}
-        
+        console.log(roteType);
         const content = this;
         const sbdata={
             price,
             rate,
             roteType:roteType.key,
-            roteLabel:roteType.title,
+            roteLabel:roteType.label,
         };
+        console.log(sbdata);
                 //联网
             fetch(`${programHost.APIhost}/user/anchor/game/item/${record._id}`, {
                 method: 'POST',
