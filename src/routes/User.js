@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Table, Divider, Tag,Pagination,Button,Popconfirm,message} from 'antd';
+import moment from 'moment';
 import *as programHost from '../utils/ajax';
 import styles from '../styles/IndexPage.less';
 var store = require('store');
@@ -76,7 +77,10 @@ export default class User extends React.Component {
             align:'center',
             title: '申请时间',
             dataIndex: 'createTime',
-            render: (text,record)=>{return(<span>{new Date(record.createTime).toISOString()}</span>)},
+            render: (text,record)=>{
+              const timeStr = moment(record.createTime).format('YYYY-MM-DD HH:mm:ss');
+              return(<span>{timeStr}</span>)
+            },
           },{
             align:'center',
             title: 'QQ号',

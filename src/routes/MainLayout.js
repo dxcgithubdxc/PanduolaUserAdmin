@@ -77,11 +77,12 @@ export default class MainLayout extends Component {
           >
           <div className={this.state.collapsed?"logo_coll":"logo"}></div>
           <Menu theme="light" mode="inline" defaultSelectedKeys={[this.state.defaultSelectedKeys]} onClick={this.menuClick.bind(this)}>
-              <Menu.Item key="home"> <Link to="/home"><Icon type="home" /><span>审核游戏</span></Link></Menu.Item >
-              <Menu.Item key="user"> <Link to="/user"><Icon type="user" /><span>用户列表</span></Link></Menu.Item >
-              <Menu.Item key="gameapplylist"> <Link to="/gameapplylist"><Icon type="user" /><span>游戏申请列表</span></Link></Menu.Item >
-              <Menu.Item key="setgifts"> <Link to="/setgifts"><Icon type="user" /><span>礼物设置</span></Link></Menu.Item >
-              
+              <Menu.Item key="home"><Link to="/home"><Icon type="home" /><span>审核游戏</span></Link></Menu.Item>
+              <Menu.Item key="user"><Link to="/user"><Icon type="snippets" /><span>用户记录</span></Link></Menu.Item>
+              <Menu.Item key="gameapplylist"> <Link to="/gameapplylist"><Icon type="snippets" /><span>游戏申请记录</span></Link></Menu.Item>
+              <Menu.Item key="bussnisslist"> <Link to="/bussnisslist"><Icon type="snippets" /><span>主播交易记录</span></Link></Menu.Item>
+              <Menu.Item key="setgifts"> <Link to="/setgifts"><Icon type="snippets" /><span>礼物设置</span></Link></Menu.Item>
+              <Menu.Item key="mclunbo"> <Link to="/mclunbo"><Icon type="snippets" /><span>主播轮播图</span></Link></Menu.Item>
               
           </Menu>
         </Sider>

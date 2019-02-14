@@ -41,6 +41,16 @@ function RouterConfig({ history, app }) {
         models: () => [import('./models/users')],
         component: () => import('./routes/SetGifts')
     })
+    const BussnissList = dynamic({
+        app,
+        models: () => [import('./models/users')],
+        component: () => import('./routes/BussnissList')
+    })
+    const MCLunbo = dynamic({
+        app,
+        models: () => [import('./models/users')],
+        component: () => import('./routes/MCLunbo')
+    })
     
     return (
         <ConnectedRouter history={history}>
@@ -55,6 +65,8 @@ function RouterConfig({ history, app }) {
                     <Route path="/user" exact component={User} />
                     <Route path="/gameapplylist" exact component={GameApplyList} />
                     <Route path="/setgifts" exact component={SetGifts} />
+                    <Route path="/bussnisslist" exact component={BussnissList} />
+                    <Route path="/mclunbo" exact component={MCLunbo} />
                     
                     {/* </Route> */}
                     </Switch>

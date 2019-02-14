@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Table, Select, Tag,Pagination,Button,Popconfirm,message,Input} from 'antd';
 import *as programHost from '../utils/ajax';
 import styles from '../styles/IndexPage.less';
@@ -7,8 +8,6 @@ var store = require('store');
 @connect(state => ({
   user: state.user,
 }))
-
-
 export default class GameApplyList extends React.Component {
 	constructor(props) {
         super(props);
@@ -24,9 +23,7 @@ export default class GameApplyList extends React.Component {
         }
     }
     componentWillMount(){
-        const userAgent= navigator.userAgent;
-	    console.log(userAgent);
-        console.log(this.props);
+        
         var username=store.get("storeuser");
         if(!username){
             const{dispatch,history}=this.props;
@@ -50,7 +47,6 @@ export default class GameApplyList extends React.Component {
                     'Authorization':programHost.getAuth(`/user/anchor/game/list/${currentPage}/10`),// 获取token
                 }),
                 }).then((response) => {
-                console.log(response);
                 response.json().then((res) => {
                     console.log(res);
                     if(res.statusCode===107){
@@ -84,7 +80,10 @@ export default class GameApplyList extends React.Component {
             align:'center',
             title: '申请时间',
             dataIndex: 'createTime',
-            render: (text,record)=>{return(<span>{new Date(record.createTime).toISOString()}</span>)},
+            render: (text,record)=>{
+                const timeStr = moment(record.createTime).format('YYYY-MM-DD HH:mm:ss');
+                return(<span>{timeStr}</span>)
+            },
           },{
             align:'center',
             title: '申请游戏段位',
@@ -135,7 +134,7 @@ export default class GameApplyList extends React.Component {
             dataIndex: 'action',
             render: (text,record)=>{
                 return this.state.editingId===record._id?(<div><Button size="small" type="primary" onClick={()=>{this.savePriceRate(record);}}>保存</Button><Button  style={{marginLeft:10}} size="small" type="primary" onClick={()=>{ this.setState({editingId:""});}}>取消</Button></div>)
-                :(<Button size="small" type="primary" onClick={()=>{ this.editPriceRate(record);}}>编辑</Button>)
+                :(<a onClick={()=>{ this.editPriceRate(record);}}>编辑</a>)
             },
           },
         ];
@@ -151,6 +150,7 @@ export default class GameApplyList extends React.Component {
         if(Number(price)<=0){message.warn("价格必须大于0！！"); return;}
         if(Number(rate)<=0){message.warn("佣金比例必须大于0！！"); return;}
         if(Number(rate)>1){message.warn("佣金比例不能超过1！！"); return;}
+        if(roteType.key===0){message.warn("请选择游戏等级！！"); return;}
         console.log(roteType);
         const content = this;
         const sbdata={
@@ -180,11 +180,9 @@ export default class GameApplyList extends React.Component {
                         message.success('设置成功！！');
                         content.setState({editingId:""});
                         content.componentWillMount();
-                        
                     }else{
                         message.warn(res.message);
                     }
-                    
                     },(data) => {
                     console.log(data)
                 });

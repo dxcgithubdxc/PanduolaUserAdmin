@@ -1,26 +1,25 @@
 import React from 'react';
-import { connect } from 'dva';
-import { createForm } from 'rc-form';
-import { Form, Icon, Input, Button,message, Checkbox,Row,Col,InputNumber,Select,Table,Pagination,Modal } from 'antd';
+import moment from 'moment';
+import { Form, Icon, Input, Button,message, Checkbox,Upload,Row,Col,InputNumber,Select,Table,Pagination,Modal } from 'antd';
 import styles from '../styles/IndexPage.less';
 import *as programHost from '../utils/ajax';
 var store = require('store');
-@createForm()
-@connect(state => ({
-  user: state.user,
-}))
 
 export default class SetGifts extends React.Component {
 	constructor(props) {
     super(props);
     this.state={
         a:1,
-        giftImg:'http://img3.tuwandata.com/uploads/play/1142101545745926.png',
+        giftImg:'',
+        previewImg:'',
+        previewVisible:false,
         giftMeili:1,
         giftName:'',
+        upToken:'',
         giftPrice:1,
         giftRemark:'',
         giftNumber:0,
+        fileList:[],
         giftTypeArr:[
             {id:1,label:'普通礼物'},
             {id:2,label:'冠名礼物'},
@@ -38,8 +37,28 @@ export default class SetGifts extends React.Component {
       
  }
 	componentWillMount(){
-        const {currentPage}=this.state;
         const content =this;
+        //七牛uptoken
+        fetch(`https://www.neptune66.cn/zhaoliangji/admin/goods/getPanDuoLaQiNiuUpToken`, {
+            method: 'GET',
+            mode: 'cors',
+            credentials: 'include',
+            headers: new Headers({
+                Accept: 'application/json',
+                'Content-Type': 'application/json;charset=UTF-8',
+            }),
+            }).then((response) => {
+            response.json().then((res) => {
+                console.log(res);
+                if(res.code===1){
+                    content.setState({upToken:res.data.upToken});
+                }
+                },(data) => {
+                console.log(data)
+            });
+            });
+        const {currentPage}=this.state;
+        
         const sbdata={where:{}};
             //联网
         fetch(`${programHost.APIhost}/admin/get/gift/list/${currentPage}/10`, {
@@ -109,6 +128,11 @@ export default class SetGifts extends React.Component {
       ];
       this.setState({colums});
   }
+   //上传礼物图
+   handleChange(file) { console.log(file); this.setState({fileList:file.fileList,giftImg:file.file.status==="done"?"http://panduola.media.neptune66.cn/"+file.file.response.hash:""})}
+   //预览礼物图
+   handlePreview(file){this.setState({ previewImg: file.url || file.thumbUrl,previewVisible: true,});}
+   handleCancel(){this.setState({ previewVisible: false });}
   submitGift(){
     const {giftImg,giftName,giftPrice,giftRemark,giftNumber,giftMeili,giftType}=this.state;
     const sbdata={
@@ -148,7 +172,7 @@ export default class SetGifts extends React.Component {
   }
   emptyGift(){
       this.setState({
-        giftImg:'http://img3.tuwandata.com/uploads/play/1142101545745926.png',
+        giftImg:'',
         giftMeili:1,
         giftName:'',
         giftPrice:1,
@@ -244,10 +268,11 @@ export default class SetGifts extends React.Component {
             });
         });
     }
-  handleCancel(){
+
+    cancelSend() {
       this.setState({
         editing:false,
-        giftImg:'http://img3.tuwandata.com/uploads/play/1142101545745926.png',
+        giftImg:'',
         giftMeili:1,
         giftName:'',
         giftPrice:1,
@@ -297,7 +322,29 @@ export default class SetGifts extends React.Component {
                 <div>
                     <Row>
                         <Col span={3}>礼物图片：</Col>
-                        <Col span={10}></Col>
+                        <Col span={4}><div className={styles.partItemDiv2}><img style={{width:100,height:100}} src={giftImg} alt="" /></div></Col>
+                            <Col span={4}>
+                                <div className={styles.partItemDiv2}>
+                                    <Upload
+                                        action='http://upload-z1.qiniup.com'
+                                        data={{
+                                            token:this.state.upToken
+                                        }}
+                                       listType="picture-card"
+                                       fileList={this.state.fileList}
+                                       onPreview={this.handlePreview.bind(this)}
+                                       onChange={this.handleChange.bind(this)}
+                                    >
+                                        {this.state.fileList.length >= 1 ? null :<div><Icon type="plus" /><div className="ant-upload-text">选择图片</div></div>}
+                                    </Upload>
+                                    {/*大图预览*/}
+                                    <Modal visible={this.state.previewVisible} footer={null} onCancel={this.handleCancel.bind(this)}>
+                                    <img  style={{ width: '100%' }} alt='' src={this.state.previewImg} />
+                                    </Modal>
+                                </div>
+                            </Col>
+                            
+                            <Col span={12}><div className={styles.partItemDiv}>请上传您的主页封面照，建议大小为：750*1334</div></Col>
                     </Row>
                 </div>
                 <div className={styles.formItem}>
@@ -355,7 +402,7 @@ export default class SetGifts extends React.Component {
                     width={500}
                     visible={editing}
                     onOk={()=>{this.handleOk()}}
-                    onCancel={()=>{this.handleCancel()}}
+                    onCancel={()=>{this.cancelSend()}}
                 >
 
                     <div className={styles.formItem0}>
